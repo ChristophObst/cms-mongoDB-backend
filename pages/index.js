@@ -6,6 +6,8 @@ const Heading = styled.h1`
   color: var(--color-nemo);
 `;
 
+//
+
 export default function HomePage() {
   return (
     <>
