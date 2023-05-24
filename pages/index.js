@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import { uid } from "uid";
+import ProductForm from "../components/ProductForm";
 
 const InputContainer = styled.div`
   display: flex;
@@ -384,6 +385,7 @@ export default function HomePage() {
         </span>
         Fish Shop
       </Heading>
+      <ProductForm />
       <ProductList />
     </>
   );
