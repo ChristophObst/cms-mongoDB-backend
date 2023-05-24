@@ -1,8 +1,9 @@
-import ProductList from "../components/ProductList";
+import useSWR from "swr";
 import styled from "styled-components";
 import { useState } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import { uid } from "uid";
+import { useRouter } from "next/router";
 
 const InputContainer = styled.div`
   display: flex;
@@ -136,6 +137,41 @@ export default function HomePage() {
 
   const [editing, setEditing] = useState(false);
 
+  //-----------------------------------------------------------------------
+  const products = useSWR("/api/products");
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const productData = Object.fromEntries(formData);
+
+    const response = await fetch("/api/products", {
+      method: "POST",
+      body: JSON.stringify(productData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      await response.json();
+      products.mutate();
+      event.target.reset();
+    } else {
+      console.error(`Error: ${response.status}`);
+    }
+  }
+
+  //-------
+
+  const router = useRouter();
+  const { data } = useSWR("/api/products");
+
+  if (!data) {
+    return <h1>Loading...</h1>;
+  }
+  //------------------------------------------------------------------
   function getInputFirstName(event) {
     setInputFieldFirstName(event.target.value);
   }
@@ -239,7 +275,7 @@ export default function HomePage() {
             <h3>Mail</h3>
             <h3>Actions</h3>
           </HeadlineContainer>
-          {todos.map((todo) => (
+          {data.map((todo) => (
             <li key={todo.id}>
               <DbContainer>
                 <FirstNameContainer>{todo.name}</FirstNameContainer>
@@ -384,7 +420,6 @@ export default function HomePage() {
         </span>
         Fish Shop
       </Heading>
-      <ProductList />
     </>
   );
 }
