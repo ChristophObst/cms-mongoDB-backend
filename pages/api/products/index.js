@@ -9,6 +9,13 @@ export default async function handler(request, response) {
     return response.status(200).json(products);
   }
 
+  if (request.method === "DELETE") {
+    const productToDelete = await Product.findByIdAndDelete(id);
+    // Declare jokeToDelete to be the joke identified by its id and delete it.
+    // This line handles the entire deletion process.
+    response.status(200).json(productToDelete);
+  }
+
   if (request.method === "POST") {
     try {
       const productData = request.body;

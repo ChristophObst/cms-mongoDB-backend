@@ -112,6 +112,19 @@ export default function ProductList() {
       console.error(`Error: ${response.status}`);
     }
   }
+  //--------------------------
+
+  async function handleDeleteProduct() {
+    const response = await fetch(`/api/products/${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      await response.json();
+      push("/");
+    } else {
+      console.error(response.status);
+    }
+  }
 
   //----------------------------
 
@@ -232,7 +245,7 @@ export default function ProductList() {
               <DeleteButtonBackend
                 className="deleteButton"
                 type="button"
-                /*   onClick={() => handleDeleteProduct(id)} */
+                onClick={() => handleDeleteProduct()}
               >
                 Delete
               </DeleteButtonBackend>
