@@ -87,15 +87,19 @@ export default function ProductList() {
   const [initialPhone, setInitialPhone] = useState();
   const [initialMail, setInitialMail] = useState();
 
+  const [editing, setEditing] = useState(false);
+
   //---------------------------------
   const products = useSWR("/api/products");
+
+  const { data, isLoading, error, mutate } = useSWR("/api/products");
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const productData = Object.fromEntries(formData);
-
+    alert("Entry Submitted!");
     const response = await fetch("/api/products", {
       method: "POST",
       body: JSON.stringify(productData),
@@ -111,6 +115,7 @@ export default function ProductList() {
     } else {
       console.error(`Error: ${response.status}`);
     }
+    event.target.reset();
   }
   //--------------------------
 
@@ -129,7 +134,6 @@ export default function ProductList() {
   //----------------------------
 
   const router = useRouter();
-  const { data } = useSWR("/api/products");
 
   if (!data) {
     return <h1>Loading...</h1>;
@@ -160,40 +164,42 @@ export default function ProductList() {
   function handleEditTodoMail(todoToEdit) {
     setInitialMail(todoToEdit);
   }
-  return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <h1>Customer-Management-System via MongoDB</h1>
-        <label htmlFor="firstName">
-          First Name:
-          <input
-            /*  value={initialFirstName}
-            onChange={handleInputFirstName} */
-            type="text"
-            id="firstName"
-            name="firstName"
-          />
-        </label>
-        <label htmlFor="lastName">
-          Last Name:
-          <input
-            /* value={initialLastName}
-            onChange={handleInputLastName} */
-            type="text"
-            id="lastName"
-            name="lastName"
-          />
-        </label>
 
-        <label htmlFor="phone">
-          Phone:
-          <input type="text" id="phone" name="phone" />
-        </label>
-        <label htmlFor="mail">
-          mail:
-          <input type="text" id="mail" name="mail" />
-        </label>
-        {/*  <label htmlFor="currency">
+  function NoEditingMode() {
+    return (
+      <>
+        <form onSubmit={handleSubmit}>
+          <h1>Customer-Management-System via MongoDB</h1>
+          <label htmlFor="firstName">
+            First Name:
+            <input
+              /*  value={initialFirstName}
+            onChange={handleInputFirstName} */
+              type="text"
+              id="firstName"
+              name="firstName"
+            />
+          </label>
+          <label htmlFor="lastName">
+            Last Name:
+            <input
+              /* value={initialLastName}
+            onChange={handleInputLastName} */
+              type="text"
+              id="lastName"
+              name="lastName"
+            />
+          </label>
+
+          <label htmlFor="phone">
+            Phone:
+            <input type="text" id="phone" name="phone" />
+          </label>
+          <label htmlFor="mail">
+            mail:
+            <input type="text" id="mail" name="mail" />
+          </label>
+          {/*  <label htmlFor="currency">
           Currency:
           <select id="currency" name="currency">
             <option value="EUR">EUR</option>
@@ -201,9 +207,63 @@ export default function ProductList() {
             <option value="GBP">GBP</option>
           </select>
         </label> */}
-        <button type="submit">Submit</button>
-      </form>
+          <button type="submit">Submit</button>
+        </form>
+      </>
+    );
+  }
 
+  function EditingMode() {
+    return (
+      <>
+        <form onSubmit={handleSubmit}>
+          <h1>Customer-Management-System via MongoDB</h1>
+          <label htmlFor="firstName">
+            First Name:
+            <input
+              /*  value={initialFirstName}
+            onChange={handleInputFirstName} */
+              type="text"
+              id="firstName"
+              name="firstName"
+            />
+          </label>
+          <label htmlFor="lastName">
+            Last Name:
+            <input
+              /* value={initialLastName}
+            onChange={handleInputLastName} */
+              type="text"
+              id="lastName"
+              name="lastName"
+            />
+          </label>
+
+          <label htmlFor="phone">
+            Phone:
+            <input type="text" id="phone" name="phone" />
+          </label>
+          <label htmlFor="mail">
+            mail:
+            <input type="text" id="mail" name="mail" />
+          </label>
+          {/*  <label htmlFor="currency">
+          Currency:
+          <select id="currency" name="currency">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </label> */}
+          <button type="submit">Submit</button>
+        </form>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {editing ? <EditingMode /> : <NoEditingMode />}
       <div>
         <h2>Database:</h2>
         <HeadlineContainerBackend>
@@ -215,43 +275,44 @@ export default function ProductList() {
           <h3>Mail</h3>
           <h3>Actions</h3>
         </HeadlineContainerBackend>
-
-        {data.map((product) => (
-          <div key={product._id}>
-            <DbContainerBackend>
-              <FirstNameContainerBackend>
-                {product.firstName}
-              </FirstNameContainerBackend>
-              <LastNameContainerBackend>
-                {product.lastName}
-              </LastNameContainerBackend>
-              <PhoneContainerBackend>{product.phone} </PhoneContainerBackend>
-              <MailContainerBackend>{product.mail} </MailContainerBackend>
-              <EditButtonBackend
-                className="editButton"
-                type="button"
-                onClick={() => {
-                  handleEditTodoFirstName(product.firstName);
-                  handleEditTodoLastName(product.lastName);
-                  /*      handleEditTodoLastName(product.lastName);
+        {!isLoading &&
+          !error &&
+          data.map((product) => (
+            <div key={product._id}>
+              <DbContainerBackend>
+                <FirstNameContainerBackend>
+                  {product.firstName}
+                </FirstNameContainerBackend>
+                <LastNameContainerBackend>
+                  {product.lastName}
+                </LastNameContainerBackend>
+                <PhoneContainerBackend>{product.phone} </PhoneContainerBackend>
+                <MailContainerBackend>{product.mail} </MailContainerBackend>
+                <EditButtonBackend
+                  className="editButton"
+                  type="button"
+                  onClick={() => {
+                    handleEditTodoFirstName(product.firstName);
+                    handleEditTodoLastName(product.lastName);
+                    /*      handleEditTodoLastName(product.lastName);
                   handleEditTodoPhone(product.phone);
                   handleEditTodoMail(product.mail); */
-                  /*  setEditing(true); */
-                }}
-              >
-                Edit
-              </EditButtonBackend>
+                    /*  setEditing(true); */
+                  }}
+                >
+                  Edit
+                </EditButtonBackend>
 
-              <DeleteButtonBackend
-                className="deleteButton"
-                type="button"
-                onClick={() => handleDeleteProduct()}
-              >
-                Delete
-              </DeleteButtonBackend>
-            </DbContainerBackend>
-          </div>
-        ))}
+                <DeleteButtonBackend
+                  className="deleteButton"
+                  type="button"
+                  onClick={() => handleDeleteProduct()}
+                >
+                  Delete
+                </DeleteButtonBackend>
+              </DbContainerBackend>
+            </div>
+          ))}
       </div>
     </>
   );
