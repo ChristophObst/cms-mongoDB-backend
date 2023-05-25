@@ -4,6 +4,7 @@ import { useState } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import { uid } from "uid";
 import { useRouter } from "next/router";
+import ProductList from "../components/ProductList";
 
 const InputContainer = styled.div`
   display: flex;
@@ -263,7 +264,7 @@ export default function HomePage() {
   function NoEditingMode() {
     return (
       <>
-        <SaveButton onClick={save}>Save</SaveButton>
+        <SaveButton onClick={handleSubmit}>Save</SaveButton>
         <div>
           <h2>Database:</h2>
           <HeadlineContainer>
@@ -276,7 +277,7 @@ export default function HomePage() {
             <h3>Actions</h3>
           </HeadlineContainer>
           {data.map((todo) => (
-            <li key={todo.id}>
+            <div key={todo.id}>
               <DbContainer>
                 <FirstNameContainer>{todo.name}</FirstNameContainer>
                 <LastNameContainer> {todo.lastName} </LastNameContainer>
@@ -306,7 +307,7 @@ export default function HomePage() {
                   Delete
                 </DeleteButton>
               </DbContainer>
-            </li>
+            </div>
           ))}
         </div>
       </>
@@ -337,8 +338,8 @@ export default function HomePage() {
             <h3>Actions</h3>
           </HeadlineContainer>
 
-          {todos.map((todo) => (
-            <li key={todo.id}>
+          {data.map((todo) => (
+            <div key={todo.id}>
               <DbContainer>
                 <FirstNameContainer>{todo.name}</FirstNameContainer>
                 <LastNameContainer> {todo.lastName} </LastNameContainer>
@@ -366,7 +367,7 @@ export default function HomePage() {
                   Delete
                 </DeleteButton>
               </DbContainer>
-            </li>
+            </div>
           ))}
         </div>
       </>
@@ -375,10 +376,10 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="App">
+      {/* <div className="App">
         <h1>Customer-Management-System</h1>
-      </div>
-      <InputContainer>
+      </div> */}
+      {/*  <InputContainer>
         <label>
           First Name:
           <input
@@ -411,15 +412,10 @@ export default function HomePage() {
             onChange={handleInputMail}
           ></input>
         </label>
-      </InputContainer>
-      {editing ? <EditingMode /> : <NoEditingMode />}
+      </InputContainer> */}
+      {/* {editing ? <EditingMode /> : <NoEditingMode />} */}
 
-      <Heading>
-        <span role="img" aria-label="A fish">
-          🐠
-        </span>
-        Fish Shop
-      </Heading>
+      <ProductList />
     </>
   );
 }

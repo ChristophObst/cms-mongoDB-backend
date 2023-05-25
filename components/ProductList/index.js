@@ -83,6 +83,9 @@ const EditButtonBackend = styled.button`
 
 export default function ProductList() {
   const [initialFirstName, setInitialFirstName] = useState();
+  const [initialLastName, setInitialLastName] = useState();
+  const [initialPhone, setInitialPhone] = useState();
+  const [initialMail, setInitialMail] = useState();
 
   //---------------------------------
   const products = useSWR("/api/products");
@@ -122,57 +125,72 @@ export default function ProductList() {
   function handleInputFirstName(event) {
     setInitialFirstName(event.target.value);
   }
-
-  function handleEditTodoFirstName(toEdit) {
-    setInitialFirstName(toEdit);
+  function handleInputLastName(event) {
+    setInitialLastName(event.target.value);
+  }
+  function handleInputPhone(event) {
+    setInitialPhone(event.target.value);
+  }
+  function handleInputMail(event) {
+    setInitialMail(event.target.value);
   }
 
+  function handleEditTodoFirstName(todoToEdit) {
+    setInitialFirstName(todoToEdit);
+  }
+  function handleEditTodoLastName(todoToEdit) {
+    setInitialLastName(todoToEdit);
+  }
+  function handleEditTodoPhone(todoToEdit) {
+    setInitialPhone(todoToEdit);
+  }
+  function handleEditTodoMail(todoToEdit) {
+    setInitialMail(todoToEdit);
+  }
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <h1>Add a new Fish</h1>
-        <label htmlFor="name">
-          Name:
+        <h1>Customer-Management-System via MongoDB</h1>
+        <label htmlFor="firstName">
+          First Name:
           <input
-            value={initialFirstName}
-            onChange={handleInputFirstName}
+            /*  value={initialFirstName}
+            onChange={handleInputFirstName} */
             type="text"
-            id="name"
-            name="name"
+            id="firstName"
+            name="firstName"
           />
         </label>
-        {/*  <label htmlFor="description">
-        Description:
-        <input type="text" id="description" name="description" />
-      </label>
-      <label htmlFor="price">
-        Price:
-        <input type="number" id="price" name="price" min="0" />
-      </label>
-      <label htmlFor="currency">
-        Currency:
-        <select id="currency" name="currency">
-          <option value="EUR">EUR</option>
-          <option value="USD">USD</option>
-          <option value="GBP">GBP</option>
-        </select>
-      </label> */}
+        <label htmlFor="lastName">
+          Last Name:
+          <input
+            /* value={initialLastName}
+            onChange={handleInputLastName} */
+            type="text"
+            id="lastName"
+            name="lastName"
+          />
+        </label>
+
+        <label htmlFor="phone">
+          Phone:
+          <input type="text" id="phone" name="phone" />
+        </label>
+        <label htmlFor="mail">
+          mail:
+          <input type="text" id="mail" name="mail" />
+        </label>
+        {/*  <label htmlFor="currency">
+          Currency:
+          <select id="currency" name="currency">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </label> */}
         <button type="submit">Submit</button>
       </form>
 
-      <div>
-        {data.map((product) => (
-          <li key={product._id}>
-            <div
-              type="text"
-              /*   onClick={() => router.push(`/${product._id}`)} */
-            >
-              {product.name}
-            </div>
-          </li>
-        ))}
-      </div>
-      {/* //------------------------------------------- */}
       <div>
         <h2>Database:</h2>
         <HeadlineContainerBackend>
@@ -186,22 +204,22 @@ export default function ProductList() {
         </HeadlineContainerBackend>
 
         {data.map((product) => (
-          <li key={product.id}>
+          <div key={product._id}>
             <DbContainerBackend>
               <FirstNameContainerBackend>
-                {product.name}
+                {product.firstName}
               </FirstNameContainerBackend>
-              {/*  <LastNameContainerBackend>
-                {" "}
-                {product.lastName}{" "}
+              <LastNameContainerBackend>
+                {product.lastName}
               </LastNameContainerBackend>
               <PhoneContainerBackend>{product.phone} </PhoneContainerBackend>
-              <MailContainerBackend>{product.mail} </MailContainerBackend> */}
+              <MailContainerBackend>{product.mail} </MailContainerBackend>
               <EditButtonBackend
                 className="editButton"
                 type="button"
                 onClick={() => {
-                  handleEditTodoFirstName(product.name);
+                  handleEditTodoFirstName(product.firstName);
+                  handleEditTodoLastName(product.lastName);
                   /*      handleEditTodoLastName(product.lastName);
                   handleEditTodoPhone(product.phone);
                   handleEditTodoMail(product.mail); */
@@ -214,12 +232,12 @@ export default function ProductList() {
               <DeleteButtonBackend
                 className="deleteButton"
                 type="button"
-                onClick={() => handleDeleteTodo(product.id)}
+                /*   onClick={() => handleDeleteProduct(id)} */
               >
                 Delete
               </DeleteButtonBackend>
             </DbContainerBackend>
-          </li>
+          </div>
         ))}
       </div>
     </>
